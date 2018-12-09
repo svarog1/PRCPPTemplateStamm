@@ -39,6 +39,11 @@ public:
 			m_data[i] = v.m_data[i];
 		}
 	}
+	template<typename Left, typename Op, typename Right>
+	Vector(Expression<Left, Op, Right, T> e)
+	{
+		this->m_data = e.calc(sizeL);
+	}
 
 	T & operator[](int i) const {
 		return m_data[i];
@@ -56,106 +61,15 @@ public:
 		cout << "\n";
 	}
 
-	bool operator==(const Vector<T, sizeL>& b) const {
-		if (this->size() == b.size())
-		{
-			for (size_t i = 0; i < this->size(); i++)
-			{
-				T temp1 = (*this)[i];
-				T temp2 = b[i];
-				if ((*this)[i] != b[i])
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+	/*template<typename Left, typename Op, typename Right>
+	Vector& operator=(Expression<Left, Op, Right, T> e) const {
+		m_data = (e.calc());
+		return this
+	}*/
 
-	}
-
-
-	Vector& operator+(const Vector<T, sizeL>& b) const {
-		Expression<Vector, Add, Vector, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	
-	Vector& operator-(const Vector<T, sizeL>& b) const {
-		Expression<Vector, Subtraction, Vector, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector*Vector */
-	Vector& operator*(const Vector<T, sizeL>& b) const {
-		Expression<Vector, PMultiplication, Vector, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector/Vector */
-	Vector& operator/(const Vector<T, sizeL>& b) const {
-		Expression<Vector, PDivision, Vector, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector+int */
-	Vector& operator+(const T & b) const {
-		Expression<Vector, Add, T, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector-int */
-	Vector& operator-(const T & b) const {
-		Expression<Vector, Subtraction, T, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector*int */
-	Vector& operator*(const T& b) const {
-		Expression<Vector, PMultiplication, T, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example Vector/int */
-	Vector& operator/(const T& b) const {
-		Expression<Vector, PDivision, T, T>  e(*this, b);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example int+Vector */
-	friend Vector& operator+(T r, const Vector<T, sizeL>& l) {
-		return l + r;
-	}
-
-	/**example int-Vector */
-	friend Vector& operator-(T r, const Vector<T, sizeL>& l) {
-		Expression<T, Subtraction, Vector, T>  e(r, l);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
-
-	/**example int*Vector */
-	friend Vector& operator*(T r, const Vector<T, sizeL>& l) {
-		return l * r;
-	}
-
-	/**example int/Vector */
-	friend Vector& operator/(T r, const Vector<T, sizeL>& l) {
-		Expression<T, PDivision, Vector, T>  e(r, l);
-		Vector& result = e.calc(sizeL);
-		return result;
-	}
+	/*Vector operator=(Vector e) const {
+		return Vector(e);
+	}*/
 
 
 
@@ -194,6 +108,93 @@ public:
 			return l / r;
 		}
 	};
+
+	bool operator==(const Vector b) const {
+		if (this->size() == b.size())
+		{
+			for (size_t i = 0; i < this->size(); i++)
+			{
+				T temp1 = (*this)[i];
+				T temp2 = b[i];
+				if ((*this)[i] != b[i])
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**example int+Vector */
+	template<typename Left, typename Op, class Right >
+	friend bool operator==(Expression<Left, Op, Right, T> & l, const Vector<T, sizeL> & r) {
+
+		return (Vector<T, sizeL>(l.calc(sizeL)) == r);
+
+	}
+
+	template<typename Left, typename Op, class Right >
+	friend bool operator==(Expression<Left, Op, Right, T> & l, Expression<Left, Op, Right, T> & r) {
+
+		return (Vector<T, sizeL>(l.calc(sizeL)) == Vector<T, sizeL>(r.calc(sizeL)));
+
+	}
+
+
+	Expression<Vector<T, sizeL>, Add, T, T>  operator+(const T & r) const {
+		Expression< Vector<T, sizeL>, Add, T, T> e((*this), r);
+		return e;
+	}
+
+	/**example int+Vector */
+	template<typename Left, class Right>
+	friend Expression<Left, Add, Right, T> operator+(const Left& l, const Right & r) {
+		Expression<Left, Add, Right, T>  e(l, r);
+		return e;
+	}
+
+	Expression<Vector<T, sizeL>, Subtraction, T, T>  operator-(const T & r) const {
+		Expression< Vector<T, sizeL>, Subtraction, T, T> e((*this), r);
+		return e;
+	}
+
+	/**example int+Vector */
+	template<typename Left, class Right>
+	friend Expression<Left, Subtraction, Right, T> operator-(const Left& l, const Right & r) {
+		Expression<Left, Subtraction, Right, T>  e(l, r);
+		return e;
+	}
+
+	Expression<Vector<T, sizeL>, PMultiplication, T, T>  operator*(const T & r) const {
+		Expression< Vector<T, sizeL>, PMultiplication, T, T> e((*this), r);
+		return e;
+	}
+
+	/**example int+Vector */
+	template<typename Left, class Right>
+	friend Expression<Left, PMultiplication, Right, T> operator*(const Left& l, const Right & r) {
+		Expression<Left, PMultiplication, Right, T>  e(l, r);
+		return e;
+	}
+
+	Expression<Vector<T, sizeL>, PDivision, T, T>  operator/(const T & r) const {
+		Expression< Vector<T, sizeL>, PDivision, T, T> e((*this), r);
+		return e;
+	}
+
+	/**example int+Vector */
+	template<typename Left, class Right>
+	friend Expression<Left, PDivision, Right, T> operator/(const Left& l, const Right & r) {
+		Expression<Left, PDivision, Right, T>  e(l, r);
+		return e;
+	}
+
+
+
 
 
 	/**Start definition for Skalarprodukt */

@@ -23,10 +23,13 @@ public:
 		return m_left.size();
 	}
 
+	auto operator=(const Expression< Left, Op, Right, T> e) const {
+		return this->calc();
+	}
+
 
 	constexpr T operator[](int i) const
 	{
-
 		/**Using when Right is a arithmetic (int, bool .....) */
 		if constexpr (std::is_arithmetic<Right>{})
 		{
@@ -43,7 +46,8 @@ public:
 		}
 	}
 
-	constexpr auto& calc(int size) {
+	constexpr T* calc(int size) {
+				
 		/**Using when Left is a arithmetic (int, bool .....) */
 		if constexpr (std::is_arithmetic<Left>{})
 		{
@@ -51,9 +55,8 @@ public:
 			for (size_t i = 0; i < size; i++)
 			{
 				array[i] = (*this)[i];
-			}
-			Right * result = new Right(array);
-			return (*result);
+			}			
+			return (array);
 		}
 		else {
 			T *array = new T[size];
@@ -61,8 +64,7 @@ public:
 			{
 				array[i] = (*this)[i];
 			}
-			Left * result = new Left(array);
-			return (*result);
+			return (array);
 		}
 
 	};
