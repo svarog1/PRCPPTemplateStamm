@@ -45,12 +45,10 @@ public:
 
 	Vector(const Vector& v)
 	{
-		v.print();
 		m_data = new T[size()];
 		for (size_t i = 0; i < size(); i++) {
 			m_data[i] = v.m_data[i];
 		}
-		print();
 	}
 
 	T operator[](int i) const {
@@ -94,7 +92,6 @@ public:
 
 	}
 
-
 	Vector& operator+(const Vector<T, sizeL>& b) const {
 		Expression<Vector, Add, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
@@ -123,7 +120,7 @@ public:
 		Expression<Vector, Add, T, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
-	}	
+	}
 
 	Vector& operator-(const T & b) const {
 		Expression<Vector, Subtraction, T, T>  e(*this, b);
@@ -147,17 +144,19 @@ public:
 		return l + r;
 	}
 
-	friend Vector& operator-(T r,const Vector<T, sizeL>& l) {
+	friend Vector& operator-(T r, const Vector<T, sizeL>& l) {
 		return l - r;
 	}
 
-	friend Vector& operator*(T r,const Vector<T, sizeL>& l) {
+	friend Vector& operator*(T r, const Vector<T, sizeL>& l) {
 		return l * r;
 	}
 
-	friend Vector& operator/(T r,const Vector<T, sizeL>& l) {
+	friend Vector& operator/(T r, const Vector<T, sizeL>& l) {
 		return l / r;
 	}
+
+
 
 
 	struct Add {
@@ -192,6 +191,42 @@ public:
 		}
 	};
 
+
+	//Start for Skalarprodukt
+	struct ScalarStruct
+	{
+	public:
+		Vector m_v;
+		ScalarStruct(const Vector& v) :m_v(v) {}
+
+		Vector& operator*() const {
+			return m_v;
+		}
+	};
+
+	ScalarStruct operator*() const {
+		return ScalarStruct((*this));
+	}
+	//Berechnet das Skalarprodukt
+	friend T& operator*(const Vector<T, sizeL>& lhs, const ScalarStruct& rhs)
+	{
+		Vector& result = rhs.m_v * lhs;
+		result.print();
+		T value;
+		for (size_t i = 0; i < result.size(); i++)
+		{
+			if (i == 0)
+			{
+				value = result[i];
+			}
+			else
+			{
+				value += result[i];
+			}
+		}
+		return value;
+	}
+	//End for Skalarprodukt
 };
 
 

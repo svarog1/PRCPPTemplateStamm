@@ -22,7 +22,6 @@ public:
 	}
 
 	Expression(const Left& l, const Right& r) : m_left{ l }, m_right{ r } {
-		m_left.print();
 	}
 
 
