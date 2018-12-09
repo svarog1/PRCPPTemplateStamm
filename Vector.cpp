@@ -2,184 +2,150 @@
 #include <memory>
 #include "pch.h"
 #include <iostream>
+#include "C:\Users\santi\source\repos\PRCPPTemplatesStamm\Expression.cpp"
+#include <cstring>
 
 using namespace std;
 
 
 
-template<class T, size_t sizeL> class Vector {
+template<class T, const int sizeL>
+class Vector {
+private:
+	T * m_data;
+
 public:
-	unique_ptr<T[sizeL]> m_array;
-	size_t m_size;
+
+	T getValue(int i) {
+		return data[i];
+	}
+
+	int size() const {
+		return sizeL;
+	}
+
+	void temp()
+	{
+		m_data[0] = 100;
+	}
 
 	Vector(const std::initializer_list<T>& data) {
-		size_t s = __min(data.size(), sizeL);
 		auto it = data.begin();
-		for (size_t i = 0; i < s; i++) {
-			this->at(i) = *it++;
+		m_data = new T[size()];
+		for (size_t i = 0; i < size(); i++) {
+			m_data[i] = *it;
+			*it++;
 		}
-		m_size = sizeL;
-	}
-
-	Vector(T[]) :m_array(new T[sizeL]), m_size(sizeL)
-	{
-	
 	};
 
-
-
-	Vector operator-(const Vector& b) {
-		Vector subtraktion = new Vector(b.m_size);
-		if (this->m_size == b.m_size) {
-
-			for (size_t i = 0; i < this->m_size; i++) {
-
-				subtraktion.m_array[i] = this->m_array[i] - b.m_array[i];
-			}
-		}
-		else
-		{
-			throw "Vektoren nicht gleich lang.";
-		}
-		return subtraktion;
+	Vector(T * array)
+	{
+		m_data = array;
 	}
 
-	Vector operator+(const Vector& b) {
-
-		Vector sum = new Vector(b.m_size);
-
-		if (this->m_size == b.m_size) {
-
-			for (size_t i = 0; i < this->m_size; i++) {
-
-				sum.m_array[i] = this->m_array[i] + b.m_array[i];
-			}
+	Vector(const Vector& v)
+	{
+		v.print();
+		m_data = new T[size()];
+		for (size_t i = 0; i < size(); i++) {
+			m_data[i] = v.m_data[i];
 		}
-		else
-		{
-			throw "Vektoren nicht gleich lang.";
-		}
-		return sum;
-
+		print();
 	}
 
-	Vector operator* (const Vector& b) {
-		Vector produkt(b.m_size);
-		if (this->m_size == b.m_size) {
-			for (size_t i = 0; i < this->m_size; i++) {
-
-				produkt.m_array[i] = this->m_array[i] * b.m_array[i];
-			}
-		}
-		else
-		{
-			throw "Vektoren nicht gleich lang.";
-		}
-		return produkt;
+	T operator[](int i) const {
+		return m_data[i];
 	}
 
-	Vector operator/(const Vector& b) {
-		Vector division = new Vector(b.m_size);
-		if (this->m_size == b.m_size) {
-			for (size_t i = 0; i < this->m_size; i++) {
-				if (b.m_array[i] != 0) {
-					division.m_array[i] = this->m_array[i] * b.m_array[i];
-				}
-				else {
-					throw "Division durch 0";
+	void print() const
+	{
+		cout << "Start: \n";
+		for (size_t i = 0; i < size(); i++)
+		{
+			T t = m_data[i];
+			cout << m_data[i] << " : ";
+
+		}
+		cout << "\n";
+	}
+
+	bool operator==(const Vector<T, sizeL>& b) const {
+		if (this->size() == b.size())
+		{
+			for (size_t i = 0; i < this->size(); i++)
+			{
+				T temp1 = (*this)[i];
+				T temp2 = b[i];
+				if ((*this)[i] != b[i])
+				{
+					return false;
 				}
 			}
+			return true;
 		}
 		else
 		{
-			throw "Vektoren nicht gleich lang.";
+			return false;
 		}
-		return division;
+
 	}
 
-	Vector SkalarAddition(T skalar) {
-		for (size_t i = 0; i < this->m_size; i++) {
-			this->m_array[i] = this->m_array[i] + skalar;
-		}
-		return this;
+
+	Vector& operator+(const Vector<T, sizeL>& b) const {
+		Expression<Vector, Add, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
-	Vector SkalarSubtraktionLinks(T skalar) {
-		for (size_t i = 0; i < this->m_size; i++) {
-			this->m_array[i] = this->m_array[i] - skalar;
-		}
-		return this;
+	Vector& operator-(const Vector<T, sizeL>& b) const {
+		Expression<Vector, Subtraction, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
-	Vector SkalarSubtraktionRechts(T skalar) {
-		for (size_t i = 0; i < this->m_size; i++) {
-
-			this->m_array[i] = skalar - this->m_array[i];
-		}
-		return this;
+	Vector& operator*(const Vector<T, sizeL>& b) const {
+		Expression<Vector, PMultiplication, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
-	Vector SkalarMultiplikation(T skalar) {
-		auto ArrayType = remove_all_extents<decltype(this->m_array)>::type;
-		for (size_t i = 0; i < this->m_size; i++) {
-			this->m_array[i] = this->m_array[i] * skalar;
-		}
-		return this;
+	Vector& operator/(const Vector<T, sizeL>& b) const {
+		Expression<Vector, PDivision, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
-	Vector SkalarDivisionRechts(T skalar) {
-		if (skalar != 0) {
-			for (size_t i = 0; i < this->m_size; i++) {
-				this->m_array[i] = this->m_array[i] / skalar;
-			}
+
+	struct Add {
+		template<typename T>
+		static T apply(T l, T r)
+		{
+			return l + r;
 		}
-		return this;
-	}
+	};
 
-	Vector SkalarDivisonLinks(T skalar) {
-		for (size_t i = 0; i < this->m_size; i++) {
-			if (this->m_array[i] != 0) this->m_array[i] = skalar / this->m_array[i];
+	struct Subtraction {
+		template<typename T>
+		static T apply(T l, T r)
+		{
+			return l - r;
 		}
-		return this;
-	}
+	};
 
-	T Skalarprodukt(const Vector& b) {
-		T skalarprodukt = new Vector(b.m_size);
-		for (size_t i = 0; i < this->m_size; i++) {
-			skalarprodukt.m_array[i] = this->m_array[i] * b.m_array[i];
+	struct PMultiplication {
+		template<typename T>
+		static T apply(T l, T r)
+		{
+			return l * r;
 		}
-		return skalarprodukt;
-	}
+	};
 
-	//friend bool operator== ( Vector b,  Vector a)
-	//{
-	//	if (a.m_size != b.m_size)
-	//	{
-	//		return false;
-	//	}
-	//	for (size_t i = 0; i < length; i++)
-	//	{
-	//		if (a[i] != b[i])
-	//		{
-	//			return false;
-	//		}
-	//	}
-	//	return true;
-	//}
+	struct PDivision {
+		template<typename T>
+		static T apply(T l, T r)
+		{
+			return l / r;
+		}
+	};
 
-	//friend bool operator== (Vector a)
-	//{
-	//	if (a.m_size != b.m_size)
-	//	{
-	//		return false;
-	//	}
-	//	for (size_t i = 0; i < length; i++)
-	//	{
-	//		if (a[i] != b[i])
-	//		{
-	//			return false;
-	//		}
-	//	}
-	//	return true;
-	//}
 };
