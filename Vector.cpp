@@ -57,6 +57,10 @@ public:
 		return m_data[i];
 	}
 
+	/*Vector operator[](int i) const {
+		return m_data[i];
+	}*/
+
 	void print() const
 	{
 		cout << "Start: \n";
@@ -92,33 +96,73 @@ public:
 
 
 	Vector& operator+(const Vector<T, sizeL>& b) const {
-		Expression<Vector, Add, T>  e(*this, b);
+		Expression<Vector, Add, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
 	Vector& operator-(const Vector<T, sizeL>& b) const {
-		Expression<Vector, Subtraction, T>  e(*this, b);
+		Expression<Vector, Subtraction, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
 	Vector& operator*(const Vector<T, sizeL>& b) const {
-		Expression<Vector, PMultiplication, T>  e(*this, b);
+		Expression<Vector, PMultiplication, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
 	Vector& operator/(const Vector<T, sizeL>& b) const {
-		Expression<Vector, PDivision, T>  e(*this, b);
+		Expression<Vector, PDivision, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
+	}
+
+	Vector& operator+(const T & b) const {
+		Expression<Vector, Add, T, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
+	}	
+
+	Vector& operator-(const T & b) const {
+		Expression<Vector, Subtraction, T, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
+	}
+
+	Vector& operator*(const T& b) const {
+		Expression<Vector, PMultiplication, T, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
+	}
+
+	Vector& operator/(const T& b) const {
+		Expression<Vector, PDivision, T, T>  e(*this, b);
+		Vector& result = e.calc(sizeL);
+		return result;
+	}
+
+	friend Vector& operator+(T r, const Vector<T, sizeL>& l) {
+		return l + r;
+	}
+
+	friend Vector& operator-(T r,const Vector<T, sizeL>& l) {
+		return l - r;
+	}
+
+	friend Vector& operator*(T r,const Vector<T, sizeL>& l) {
+		return l * r;
+	}
+
+	friend Vector& operator/(T r,const Vector<T, sizeL>& l) {
+		return l / r;
 	}
 
 
 	struct Add {
 		template<typename T>
-		static T apply(T l, T r)
+		static T apply(const T l, const T r)
 		{
 			return l + r;
 		}
@@ -126,7 +170,7 @@ public:
 
 	struct Subtraction {
 		template<typename T>
-		static T apply(T l, T r)
+		static T apply(const T l, const T r)
 		{
 			return l - r;
 		}
@@ -134,7 +178,7 @@ public:
 
 	struct PMultiplication {
 		template<typename T>
-		static T apply(T l, T r)
+		static T apply(const T l, const T r)
 		{
 			return l * r;
 		}
@@ -142,10 +186,13 @@ public:
 
 	struct PDivision {
 		template<typename T>
-		static T apply(T l, T r)
+		static T apply(const T l, const T r)
 		{
 			return l / r;
 		}
 	};
 
 };
+
+
+
