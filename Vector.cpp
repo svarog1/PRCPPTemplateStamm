@@ -145,7 +145,9 @@ public:
 	}
 
 	friend Vector& operator-(T r, const Vector<T, sizeL>& l) {
-		return l - r;
+		Expression<T, Subtraction, Vector, T>  e(r, l);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
 	friend Vector& operator*(T r, const Vector<T, sizeL>& l) {
@@ -153,7 +155,9 @@ public:
 	}
 
 	friend Vector& operator/(T r, const Vector<T, sizeL>& l) {
-		return l / r;
+		Expression<T, PDivision, Vector, T>  e(r, l);
+		Vector& result = e.calc(sizeL);
+		return result;
 	}
 
 
@@ -208,7 +212,7 @@ public:
 		return ScalarStruct((*this));
 	}
 	//Berechnet das Skalarprodukt
-	friend T& operator*(const Vector<T, sizeL>& lhs, const ScalarStruct& rhs)
+	friend T operator*(const Vector<T, sizeL>& lhs, const ScalarStruct& rhs)
 	{
 		Vector& result = rhs.m_v * lhs;
 		result.print();
