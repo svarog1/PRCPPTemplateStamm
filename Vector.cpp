@@ -7,26 +7,15 @@
 
 using namespace std;
 
-
-
 template<class T, const int sizeL>
 class Vector {
 private:
 	T * m_data;
 
 public:
-
-	T getValue(int i) {
-		return data[i];
-	}
-
+	/** return array size. */
 	int size() const {
 		return sizeL;
-	}
-
-	void temp()
-	{
-		m_data[0] = 100;
 	}
 
 	Vector(const std::initializer_list<T>& data) {
@@ -51,13 +40,9 @@ public:
 		}
 	}
 
-	T operator[](int i) const {
+	T & operator[](int i) const {
 		return m_data[i];
 	}
-
-	/*Vector operator[](int i) const {
-		return m_data[i];
-	}*/
 
 	void print() const
 	{
@@ -92,68 +77,80 @@ public:
 
 	}
 
+
 	Vector& operator+(const Vector<T, sizeL>& b) const {
 		Expression<Vector, Add, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	
 	Vector& operator-(const Vector<T, sizeL>& b) const {
 		Expression<Vector, Subtraction, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector*Vector */
 	Vector& operator*(const Vector<T, sizeL>& b) const {
 		Expression<Vector, PMultiplication, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector/Vector */
 	Vector& operator/(const Vector<T, sizeL>& b) const {
 		Expression<Vector, PDivision, Vector, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector+int */
 	Vector& operator+(const T & b) const {
 		Expression<Vector, Add, T, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector-int */
 	Vector& operator-(const T & b) const {
 		Expression<Vector, Subtraction, T, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector*int */
 	Vector& operator*(const T& b) const {
 		Expression<Vector, PMultiplication, T, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example Vector/int */
 	Vector& operator/(const T& b) const {
 		Expression<Vector, PDivision, T, T>  e(*this, b);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example int+Vector */
 	friend Vector& operator+(T r, const Vector<T, sizeL>& l) {
 		return l + r;
 	}
 
+	/**example int-Vector */
 	friend Vector& operator-(T r, const Vector<T, sizeL>& l) {
 		Expression<T, Subtraction, Vector, T>  e(r, l);
 		Vector& result = e.calc(sizeL);
 		return result;
 	}
 
+	/**example int*Vector */
 	friend Vector& operator*(T r, const Vector<T, sizeL>& l) {
 		return l * r;
 	}
 
+	/**example int/Vector */
 	friend Vector& operator/(T r, const Vector<T, sizeL>& l) {
 		Expression<T, PDivision, Vector, T>  e(r, l);
 		Vector& result = e.calc(sizeL);
@@ -162,7 +159,7 @@ public:
 
 
 
-
+	/**operators */
 	struct Add {
 		template<typename T>
 		static T apply(const T l, const T r)
@@ -171,6 +168,7 @@ public:
 		}
 	};
 
+	/**operators */
 	struct Subtraction {
 		template<typename T>
 		static T apply(const T l, const T r)
@@ -179,6 +177,7 @@ public:
 		}
 	};
 
+	/**operators */
 	struct PMultiplication {
 		template<typename T>
 		static T apply(const T l, const T r)
@@ -187,6 +186,7 @@ public:
 		}
 	};
 
+	/**operators */
 	struct PDivision {
 		template<typename T>
 		static T apply(const T l, const T r)
@@ -196,7 +196,7 @@ public:
 	};
 
 
-	//Start for Skalarprodukt
+	/**Start definition for Skalarprodukt */
 	struct ScalarStruct
 	{
 	public:
@@ -211,7 +211,7 @@ public:
 	ScalarStruct operator*() const {
 		return ScalarStruct((*this));
 	}
-	//Berechnet das Skalarprodukt
+	/**Berechnet das Skalarprodukt */
 	friend T operator*(const Vector<T, sizeL>& lhs, const ScalarStruct& rhs)
 	{
 		Vector& result = rhs.m_v * lhs;
@@ -230,7 +230,7 @@ public:
 		}
 		return value;
 	}
-	//End for Skalarprodukt
+	/**End definition for Skalarprodukt */
 };
 
 
