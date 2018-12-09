@@ -61,18 +61,6 @@ public:
 		cout << "\n";
 	}
 
-	/*template<typename Left, typename Op, typename Right>
-	Vector& operator=(Expression<Left, Op, Right, T> e) const {
-		m_data = (e.calc());
-		return this
-	}*/
-
-	/*Vector operator=(Vector e) const {
-		return Vector(e);
-	}*/
-
-
-
 	/**operators */
 	struct Add {
 		template<typename T>
@@ -129,7 +117,6 @@ public:
 		}
 	}
 
-	/**example int+Vector */
 	template<typename Left, typename Op, class Right >
 	friend bool operator==(Expression<Left, Op, Right, T> & l, const Vector<T, sizeL> & r) {
 
@@ -192,46 +179,6 @@ public:
 		Expression<Left, PDivision, Right, T>  e(l, r);
 		return e;
 	}
-
-
-
-
-
-	/**Start definition for Skalarprodukt */
-	struct ScalarStruct
-	{
-	public:
-		Vector m_v;
-		ScalarStruct(const Vector& v) :m_v(v) {}
-
-		Vector& operator*() const {
-			return m_v;
-		}
-	};
-
-	ScalarStruct operator*() const {
-		return ScalarStruct((*this));
-	}
-	/**Berechnet das Skalarprodukt */
-	friend T operator*(const Vector<T, sizeL>& lhs, const ScalarStruct& rhs)
-	{
-		Vector& result = rhs.m_v * lhs;
-		result.print();
-		T value;
-		for (size_t i = 0; i < result.size(); i++)
-		{
-			if (i == 0)
-			{
-				value = result[i];
-			}
-			else
-			{
-				value += result[i];
-			}
-		}
-		return value;
-	}
-	/**End definition for Skalarprodukt */
 };
 
 
