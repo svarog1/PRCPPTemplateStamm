@@ -137,7 +137,7 @@ public:
 		return e;
 	}
 
-	/**example int+Vector */
+
 	template<typename Left, class Right>
 	friend Expression<Left, Add, Right, T> operator+(const Left& l, const Right & r) {
 		Expression<Left, Add, Right, T>  e(l, r);
@@ -149,7 +149,7 @@ public:
 		return e;
 	}
 
-	/**example int+Vector */
+
 	template<typename Left, class Right>
 	friend Expression<Left, Subtraction, Right, T> operator-(const Left& l, const Right & r) {
 		Expression<Left, Subtraction, Right, T>  e(l, r);
@@ -161,7 +161,7 @@ public:
 		return e;
 	}
 
-	/**example int+Vector */
+
 	template<typename Left, class Right>
 	friend Expression<Left, PMultiplication, Right, T> operator*(const Left& l, const Right & r) {
 		Expression<Left, PMultiplication, Right, T>  e(l, r);
@@ -173,7 +173,7 @@ public:
 		return e;
 	}
 
-	/**example int+Vector */
+
 	template<typename Left, class Right>
 	friend Expression<Left, PDivision, Right, T> operator/(const Left& l, const Right & r) {
 		Expression<Left, PDivision, Right, T>  e(l, r);
