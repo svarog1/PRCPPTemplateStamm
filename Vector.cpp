@@ -106,10 +106,8 @@ public:
 	bool operator==(const Vector b) const {
 		if (this->size() == b.size())
 		{
-			for (size_t i = 0; i < this->size(); i++)
+			for (int i = 0; i < this->size(); i++)
 			{
-				T temp1 = (*this)[i];
-				T temp2 = b[i];
 				if ((*this)[i] != b[i])
 				{
 					return false;

@@ -28,8 +28,16 @@ public:
 	}
 
 
-	constexpr T operator[](int i) const
+	T operator[](int i) const
 	{
+		/**Using when Right is a arithmetic (int, bool .....) */
+		if constexpr (std::is_arithmetic<Right>{})
+		{
+				/**Op need to be a struct wiht a function apply. This ar defined in Vector (Add, Subtraction)*/
+				return Op::template apply<T>(m_left[i], m_right);
+						
+		}
+
 		/**Using when Right is a arithmetic (int, bool .....) */
 		if constexpr (std::is_arithmetic<Right>{})
 		{
@@ -46,10 +54,10 @@ public:
 		}
 	}
 
-	constexpr T* calc(int size) {
+	T* calc(int size) {
 				
 		/**Using when Left is a arithmetic (int, bool .....) */
-		if constexpr (std::is_arithmetic<Left>{})
+		if (std::is_arithmetic<Left>{})
 		{
 			T *array = new T[size];
 			for (size_t i = 0; i < size; i++)
