@@ -12,6 +12,22 @@ class Vector {
 private:
 	T * m_data;
 
+	void print(ostream & out) const
+	{
+		out << "[";
+		for (size_t i = 0; i < size(); i++)
+		{
+			if (i>0)
+			{				
+				out << ", " ;
+			}
+			out << m_data[i] << " ";
+			
+
+		}
+		out << "]";
+	}
+
 public:
 	/** return array size. */
 	int size() const {
@@ -49,17 +65,7 @@ public:
 		return m_data[i];
 	}
 
-	void print() const
-	{
-		cout << "Start: \n";
-		for (size_t i = 0; i < size(); i++)
-		{
-			T t = m_data[i];
-			cout << m_data[i] << " : ";
-
-		}
-		cout << "\n";
-	}
+	
 
 	/**operators */
 	struct Add {
@@ -117,17 +123,15 @@ public:
 		}
 	}
 
+	friend ostream& operator<<(ostream& out, Vector<T, sizeL> vector) {
+		vector.print(out);
+		return out;
+	}
+
 	template<typename Left, typename Op, class Right >
 	friend bool operator==(Expression<Left, Op, Right, T> & l, const Vector<T, sizeL> & r) {
 
 		return (Vector<T, sizeL>(l.calc(sizeL)) == r);
-
-	}
-
-	template<typename Left, typename Op, class Right >
-	friend bool operator==(Expression<Left, Op, Right, T> & l, Expression<Left, Op, Right, T> & r) {
-
-		return (Vector<T, sizeL>(l.calc(sizeL)) == Vector<T, sizeL>(r.calc(sizeL)));
 
 	}
 
